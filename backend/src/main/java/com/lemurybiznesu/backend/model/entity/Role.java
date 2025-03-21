@@ -2,7 +2,6 @@ package com.lemurybiznesu.backend.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,7 +27,6 @@ public class Role {
     private Long id;
 
     @NotNull(message = "Role name cannot be null")
-    @Size(min = 20, max = 20)
     @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(name = "name", nullable = false, unique = true, updatable = false, length = 20,
