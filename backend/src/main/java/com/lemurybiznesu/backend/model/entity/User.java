@@ -99,6 +99,9 @@ public class User {
     )
     private Role role;
 
+    @Column(name = "token_version", nullable = false, columnDefinition = "INT UNSIGNED DEFAULT 0")
+    private Integer tokenVersion = 0;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
