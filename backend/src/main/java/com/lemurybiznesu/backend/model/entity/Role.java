@@ -30,7 +30,7 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(name = "name", nullable = false, unique = true, updatable = false, length = 20,
-            columnDefinition = "VARCHAR(20) CHECK (name IN ('ROLE_USER','ROLE_MODERATOR','ROLE_ADMIN'))")
+            columnDefinition = "VARCHAR(20)")
     private ERole name;
 
     @CreatedDate
