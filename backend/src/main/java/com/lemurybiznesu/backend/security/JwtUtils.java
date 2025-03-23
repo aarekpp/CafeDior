@@ -4,7 +4,9 @@ import com.lemurybiznesu.backend.model.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -13,13 +15,15 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class JavaUtils {
+public class JwtUtils {
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.access-token.expiration}")
     private Long accessTokenExpiration;
     @Value("${jwt.refresh-token.expiration}")
     private Long refreshTokenExpiration;
+    @Value("${app.cookie.domain}")
+    private String cookieDomain;
 
     private SecretKey key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
@@ -84,5 +88,53 @@ public class JavaUtils {
         if (tokenVersion != user.getTokenVersion()) {
             throw new JwtException("Token version mismatch");
         }
+    }
+
+    public void setJwtCookies(HttpServletResponse response,
+                              String accessToken,
+                              String refreshToken) {
+        ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
+                .httpOnly(true)
+                .secure(true)
+                .domain(cookieDomain)
+                .path("/")
+                .maxAge(accessTokenExpiration / 1000)
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .domain(cookieDomain)
+                .path("/api/auth/refresh")
+                .maxAge(refreshTokenExpiration / 1000)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader("Set-Cookie", accessCookie.toString());
+        response.addHeader("Set-Cookie", refreshCookie.toString());
+    }
+
+    public void clearJwtCookies(HttpServletResponse response) {
+        ResponseCookie accessCookie = ResponseCookie.from("access_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .domain(cookieDomain)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .domain(cookieDomain)
+                .path("/api/auth/refresh")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader("Set-Cookie", accessCookie.toString());
+        response.addHeader("Set-Cookie", refreshCookie.toString());
     }
 }
