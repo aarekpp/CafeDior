@@ -1,0 +1,30 @@
+.container {
+  height: 5rem;
+  box-shadow: 0px 5px 15px 0px rgba(66, 68, 90, 1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.logo {
+  max-height: 4rem;
+  width: auto;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  width: 25%;
+}
+
+.registerButton {
+  background-color: #42a5f5;
+  border-radius: 0.5rem;
+}
+
+.link {
+  width: 100%;
+}
