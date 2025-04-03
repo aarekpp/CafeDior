@@ -1,0 +1,35 @@
+.signInPage {
+  background-image: url("../../icons/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: auto;
+}
+
+.logo {
+  max-width: 130px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.link {
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.container {
+  width: 45%;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  background-color: white;
+  opacity: 90%;
+}
