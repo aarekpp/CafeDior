@@ -86,7 +86,7 @@ const SignIn = () => {
               className={`formInput ${passwordError ? "error" : ""}`}
               placeholder="********"
               fullWidth
-              label="Password"
+              label="Hasło"
               type="password"
               variant="outlined"
               margin="normal"
