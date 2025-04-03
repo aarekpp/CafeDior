@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://127.0.0.1:3000", "https://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("https://127.0.0.1:3000", "https://localhost:3000", "https://127.0.0.1:8443"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));
@@ -59,6 +59,14 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/swagger-ui.html",
+                                "/api/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/verify-token").permitAll()
