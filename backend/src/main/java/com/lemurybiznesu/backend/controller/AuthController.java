@@ -1,7 +1,10 @@
 package com.lemurybiznesu.backend.controller;
 
 import com.lemurybiznesu.backend.model.dto.request.SigninRequest;
+import com.lemurybiznesu.backend.model.dto.request.SignupRequest;
 import com.lemurybiznesu.backend.model.dto.response.AuthResponse;
+import com.lemurybiznesu.backend.model.dto.response.UserResponse;
+import com.lemurybiznesu.backend.model.entity.User;
 import com.lemurybiznesu.backend.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,5 +76,19 @@ public class AuthController {
             @Parameter(hidden = true, description = "Odpowiedź") HttpServletResponse response){
         authService.logout(request, response);
         return ResponseEntity.ok().body("Logout successful");
+    }
+
+    @Operation(
+            summary = "Rejestracja użytkownika",
+            description = "Tworzy konto nowego użytkownika"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Zarejestrowano nowego użytkownika", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe")
+    })
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest) {
+        User newUser = authService.signupUser(signupRequest);
+        return ResponseEntity.ok().body(UserResponse.fromEntity(newUser));
     }
 }

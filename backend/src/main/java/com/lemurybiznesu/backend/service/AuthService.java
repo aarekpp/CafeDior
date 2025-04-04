@@ -1,8 +1,12 @@
 package com.lemurybiznesu.backend.service;
 
 import com.lemurybiznesu.backend.model.dto.request.SigninRequest;
+import com.lemurybiznesu.backend.model.dto.request.SignupRequest;
 import com.lemurybiznesu.backend.model.dto.response.AuthResponse;
+import com.lemurybiznesu.backend.model.entity.ERole;
+import com.lemurybiznesu.backend.model.entity.Role;
 import com.lemurybiznesu.backend.model.entity.User;
+import com.lemurybiznesu.backend.repository.RoleRepository;
 import com.lemurybiznesu.backend.repository.UserRepository;
 import com.lemurybiznesu.backend.security.CookieTokens;
 import com.lemurybiznesu.backend.security.JwtProvider;
@@ -26,13 +30,15 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenBlacklistService refreshTokenBlacklistService;
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, RefreshTokenBlacklistService refreshTokenBlacklistService, UserService userService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, RefreshTokenBlacklistService refreshTokenBlacklistService, UserService userService, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.refreshTokenBlacklistService = refreshTokenBlacklistService;
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     public AuthResponse authenticateUser(HttpServletRequest request, HttpServletResponse response, SigninRequest signinRequest) {
@@ -68,6 +74,28 @@ public class AuthService {
                 userId,
                 user.getRole().getName().toString()
         );
+    }
+
+    public User signupUser(SignupRequest signupRequest) {
+        if(!signupRequest.getPassword().equals(signupRequest.getConfirmPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
+
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("Role not found"));
+
+        User user = new User();
+        user.setFirstName(signupRequest.getFirstName());
+        user.setLastName(signupRequest.getLastName());
+        user.setEmail(signupRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setPhoneNumber(signupRequest.getPhoneNumber());
+        user.setRole(userRole);
+
+        try{
+            return userRepository.save(user);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public CookieTokens getJwtTokensFromRequest(HttpServletRequest request) {

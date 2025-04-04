@@ -12,10 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(description = "Odpowiedź autentykacyjna zawierająca informacje o użytkowniku")
 public class AuthResponse {
-    @Schema(
-            description = "Unikalny identyfikator użytkownika",
-            example = "507f1f77bcf86cd799439011"
-    )
+    @Schema(description = "Unikalny identyfikator użytkownika", example = "507f1f77bcf86cd799439011")
     private String userId;
 
     @Schema(
