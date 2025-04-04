@@ -11,6 +11,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class DataInitializer implements CommandLineRunner {
         try{
             initializeRoles();
             initializeAdminAccount();
+            initializeImagesDirectory();
             LOGGER.info("Data initialized");
         } catch (Exception e) {
             LOGGER.error("Error while initializing data", e);
@@ -68,6 +73,22 @@ public class DataInitializer implements CommandLineRunner {
             }
         } catch (Exception e) {
             LOGGER.error("Error while initializing admin account", e);
+        }
+    }
+
+    private void initializeImagesDirectory(){
+        Path path = Paths.get("images");
+        try{
+            if(!Files.exists(path)){
+                Files.createDirectory(path);
+            }
+            if (!Files.isWritable(path)) {
+                LOGGER.error("No write permissions for images directory: {}", path);
+                throw new RuntimeException("No write permissions for images directory");
+            }
+        }catch (IOException e){
+            LOGGER.error("Failed to create images directory", e);
+            throw new RuntimeException("Failed to initialize images directory", e);
         }
     }
 }
