@@ -81,7 +81,7 @@ public class AuthService {
             throw new RuntimeException("Passwords do not match");
         }
 
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role userRole = roleRepository.findByName(ERole.USER).orElseThrow(() -> new RuntimeException("Role not found"));
 
         User user = new User();
         user.setFirstName(signupRequest.getFirstName());
@@ -139,6 +139,20 @@ public class AuthService {
             }
         }catch (Exception ex) {
             throw new RuntimeException("Unable to log out", ex);
+        }
+    }
+
+    public User getCurrentUser(HttpServletRequest request) {
+        CookieTokens cookieTokens = getJwtTokensFromRequest(request);
+
+        if(cookieTokens.getAccessToken() != null && cookieTokens.getRefreshToken() != null &&
+                jwtProvider.validateToken(cookieTokens.getAccessToken(), false) &&
+                jwtProvider.validateToken(cookieTokens.getRefreshToken(), true))
+        {
+            TokenDetails details = jwtProvider.decodeToken(cookieTokens.getAccessToken(), false);
+            return userRepository.findById(UUID.fromString(details.getUserId())).orElseThrow(() -> new RuntimeException("User not found"));
+        }else{
+            throw new RuntimeException("Invalid tokens");
         }
     }
 

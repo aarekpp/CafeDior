@@ -1,5 +1,6 @@
 package com.lemurybiznesu.backend.config;
 
+import com.lemurybiznesu.backend.model.entity.ERole;
 import com.lemurybiznesu.backend.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,11 +68,18 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/auth/signup").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/auth/verify-token").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/auth/signin",
+                                "/api/auth/signup",
+                                "/api/auth/verify-token"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").denyAll()
+                        .requestMatchers(HttpMethod.GET, "/api/about").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
+                        .requestMatchers(HttpMethod.PUT, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
+                        .requestMatchers(HttpMethod.DELETE, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
+                        .requestMatchers("/api/about/**").denyAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
