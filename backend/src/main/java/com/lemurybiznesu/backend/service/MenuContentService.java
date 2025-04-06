@@ -39,7 +39,7 @@ public class MenuContentService {
                     .path(content.getFileName())
                     .toUriString();
 
-            imageResponse.setId(content.getId());
+            imageResponse.setId(content.getId().toString());
             imageResponse.setUrl(url);
             imageResponse.setDisplayOrder(content.getDisplayOrder());
             responses.add(imageResponse);
@@ -71,10 +71,11 @@ public class MenuContentService {
                 menuContent.setLastModifiedBy(user);
                 menuContent = menuContentRepository.save(menuContent);
 
-                responses.add(new ImageResponse(menuContent.getId(), storedFileName, order));
+                responses.add(new ImageResponse(menuContent.getId().toString(), storedFileName, order));
             }
             return responses;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

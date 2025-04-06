@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class MenuContent {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     @EqualsAndHashCode.Include
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "File name cannot be blank")
     @Size(max = 255)

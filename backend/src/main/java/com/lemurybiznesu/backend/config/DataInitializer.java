@@ -36,6 +36,7 @@ public class DataInitializer implements CommandLineRunner {
         try{
             initializeRoles();
             initializeAdminAccount();
+            initializeModeratorAccount();
             initializeImagesDirectory();
             LOGGER.info("Data initialized");
         } catch (Exception e) {
@@ -76,30 +77,44 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void initializeImagesDirectory(){
-        Path path = Paths.get("images");
+    private void initializeModeratorAccount(){
         try{
-            if(!Files.exists(path)){
-                Files.createDirectory(path);
+            Role moderatorRole = roleRepository.findByName(ERole.MODERATOR).orElseThrow(() -> new RuntimeException("Role moderator not found"));
+            List<User> moderatorUser = userRepository.findByRole(moderatorRole);
+            if(moderatorUser.isEmpty()){
+                User user = new User();
+                user.setFirstName("Moderator");
+                user.setLastName("Moderator");
+                user.setEmail("moderator@lemurybiznesu.com");
+                user.setPhoneNumber("+48112233444");
+                user.setPassword(passwordEncoder.encode("ZAQ!2wsxcd"));
+                user.setRole(moderatorRole);
+                userRepository.save(user);
             }
-            if (!Files.isWritable(path)) {
-                LOGGER.error("No write permissions for images directory: {}", path);
-                throw new RuntimeException("No write permissions for images directory");
+        } catch (Exception e) {
+            LOGGER.error("Error while initializing moderator account", e);
+        }
+    }
+
+    private void initializeImagesDirectory() {
+        Path path = Paths.get("images");
+        try {
+            Files.createDirectories(path);
+            checkWritePermissions(path);
+
+            for (String dir : Arrays.asList("menu", "contact")) {
+                Path subDir = path.resolve(dir);
+                Files.createDirectories(subDir);
+                checkWritePermissions(subDir);
             }
-            List<String> subDirectories = Arrays.asList("menu", "contact");
-            for (String dir : subDirectories) {
-                Path subDirPath = path.resolve(dir);
-                if(!Files.exists(subDirPath)){
-                    Files.createDirectory(subDirPath);
-                }
-                if (!Files.isWritable(subDirPath)) {
-                    LOGGER.error("No write permissions for images directory: {}", path);
-                    throw new RuntimeException("No write permissions for images directory");
-                }
-            }
-        }catch (IOException e){
-            LOGGER.error("Failed to create images directory", e);
-            throw new RuntimeException("Failed to initialize images directory", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Directory initialization failed: " + path.toAbsolutePath(), e);
+        }
+    }
+
+    private void checkWritePermissions(Path path) {
+        if (!Files.isWritable(path)) {
+            throw new RuntimeException("No write permissions for: " + path.toAbsolutePath());
         }
     }
 }

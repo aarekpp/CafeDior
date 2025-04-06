@@ -80,6 +80,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
                         .requestMatchers(HttpMethod.DELETE, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
                         .requestMatchers("/api/about/**").denyAll()
+                        .requestMatchers(HttpMethod.POST, "/api/menu").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
                         .anyRequest().authenticated()
                 );
         return http.build();
