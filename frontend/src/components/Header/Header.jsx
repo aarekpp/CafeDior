@@ -1,68 +1,43 @@
 import React from "react";
 import Logo from "../../icons/logo.png";
-
+import { useNavigate } from "react-router";
 import styles from "./Header.module.scss";
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Link,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <div className={styles.container}>
       <Box textAlign="center">
         <img src={Logo} alt="CafeDior logo" className={styles.logo} />
       </Box>
+      <div className={styles.bookmarks}>
+        <Typography onClick={() => navigate("/")}>O nas</Typography>
+        <Typography onClick={() => navigate("/")}>
+          Nasze specjalności
+        </Typography>
+        <Typography onClick={() => navigate("/")}>Menu</Typography>
+        <Typography onClick={() => navigate("/")}>Kontakt</Typography>
+      </div>
 
       <div className={styles.buttons}>
         <Button
-          fullWidth
-          variant="outlined"
-          type="submit"
-          color="white"
           className={styles.loginButton}
-          sx={{
-            border: "2px solid",
-            borderColor: "primary.main",
-            borderRadius: ".5rem",
-          }}
+          fullWidth
+          type="button"
+          color="white"
+          onClick={() => navigate("/signin")}
         >
-          <Link
-            href="/signin"
-            className={styles.link}
-            sx={{
-              textDecorationLine: "none",
-              color: "primary",
-              fontSize: "12px",
-              fontWeight: "bold",
-            }}
-          >
-            Zaloguj się
-          </Link>
+          Zaloguj się
         </Button>
 
         <Button
-          fullWidth
-          variant="contained"
-          type="submit"
           className={styles.registerButton}
+          fullWidth
+          type="button"
+          onClick={() => navigate("/signup")}
         >
-          <Link
-            href="/signup"
-            className={styles.link}
-            sx={{
-              textDecorationLine: "none",
-              color: "white",
-              fontSize: "12px",
-              fontWeight: "bold",
-            }}
-          >
-            Zarejestruj się
-          </Link>
+          Zarejestruj się
         </Button>
       </div>
     </div>

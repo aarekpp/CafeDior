@@ -1,30 +1,61 @@
 .container {
   height: 5rem;
+  background-color: white;
   box-shadow: 0px 5px 15px 0px rgba(66, 68, 90, 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
-}
+  padding: 0 4rem;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 
-.logo {
-  max-height: 4rem;
-  width: auto;
-}
+  .logo {
+    max-height: 4rem;
+    width: auto;
+  }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  height: 100%;
-  width: 25%;
-}
+  .bookmarks {
+    width: 100%;
+    padding-left: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    gap: 2rem;
+    color: #9f7438;
+    cursor: pointer;
+  }
 
-.registerButton {
-  background-color: #42a5f5;
-  border-radius: 0.5rem;
-}
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+    width: 40%;
 
-.link {
-  width: 100%;
+    .loginButton {
+      background-color: white;
+      color: #1976d2;
+      border: 2px solid #1976d2;
+      border-radius: 0.5rem;
+
+      &:hover {
+        background-color: #1976d2;
+        color: white;
+      }
+    }
+
+    .registerButton {
+      background-color: white;
+      color: white;
+      border: 2px solid #1976d2;
+      border-radius: 0.5rem;
+      background-color: #1976d2;
+
+      &:hover {
+        background-color: white;
+        color: #1976d2;
+      }
+    }
+  }
 }

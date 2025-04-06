@@ -19,7 +19,7 @@ const StyledContainer = styled(Container)({
   justifyContent: "center",
   alignItems: "center",
   padding: "2rem 0",
-  borderRadius: ".5rem",
+  borderRadius: "1rem",
   boxShadow: "0px 0px 15px 0px rgba(66, 68, 90, 1)",
 });
 
@@ -127,7 +127,6 @@ const SignUp = () => {
               variant="outlined"
               margin="normal"
               required
-              autoFocus
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -140,7 +139,6 @@ const SignUp = () => {
               variant="outlined"
               margin="normal"
               required
-              autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -153,7 +151,6 @@ const SignUp = () => {
               variant="outlined"
               margin="normal"
               required
-              autoFocus
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />

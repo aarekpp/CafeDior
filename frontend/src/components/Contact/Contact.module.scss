@@ -1,0 +1,17 @@
+.contact {
+  width: 100%;
+  height: calc(100vh - 5rem);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  place-items: center;
+
+  .openingHours,
+  .address {
+    .image {
+      height: calc(100vh - 10rem);
+
+      border-radius: 1rem;
+      box-shadow: 0px 0px 30px 0px rgba(66, 68, 90, 1);
+    }
+  }
+}

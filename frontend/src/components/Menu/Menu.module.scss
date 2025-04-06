@@ -1,0 +1,32 @@
+.menu {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4rem 7rem;
+  align-items: center;
+  justify-content: center;
+
+  .menuLeft {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    .menuPhoto {
+      max-height: calc(100vh - 6rem);
+      border-radius: 1rem;
+      box-shadow: 0px 0px 30px 0px rgba(66, 68, 90, 1);
+    }
+  }
+
+  .menuRight {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+
+    .menuPhoto {
+      max-height: calc(100vh - 6rem);
+      border-radius: 1rem;
+      box-shadow: 0px 0px 30px 0px rgba(66, 68, 90, 1);
+    }
+  }
+}
