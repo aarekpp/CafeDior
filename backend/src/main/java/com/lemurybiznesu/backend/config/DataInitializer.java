@@ -86,6 +86,17 @@ public class DataInitializer implements CommandLineRunner {
                 LOGGER.error("No write permissions for images directory: {}", path);
                 throw new RuntimeException("No write permissions for images directory");
             }
+            List<String> subDirectories = Arrays.asList("menu", "contact");
+            for (String dir : subDirectories) {
+                Path subDirPath = path.resolve(dir);
+                if(!Files.exists(subDirPath)){
+                    Files.createDirectory(subDirPath);
+                }
+                if (!Files.isWritable(subDirPath)) {
+                    LOGGER.error("No write permissions for images directory: {}", path);
+                    throw new RuntimeException("No write permissions for images directory");
+                }
+            }
         }catch (IOException e){
             LOGGER.error("Failed to create images directory", e);
             throw new RuntimeException("Failed to initialize images directory", e);

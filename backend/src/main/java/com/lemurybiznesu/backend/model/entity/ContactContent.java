@@ -1,0 +1,53 @@
+package com.lemurybiznesu.backend.model.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "contact_content", indexes = {@Index(name = "idx_contact_order", columnList = "display_order")})
+@EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class ContactContent {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    @EqualsAndHashCode.Include
+    private String id;
+
+    @NotBlank(message = "File name cannot be blank")
+    @Size(max = 255)
+    @Column(name = "file_name", nullable = false, unique = true, length = 255,
+            columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
+    private String fileName;
+
+    @NotNull(message = "Display order cannot be empty")
+    @Column(name = "display_order", nullable = false, columnDefinition = "INT UNSIGNED")
+    private Integer displayOrder;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by", referencedColumnName = "id", columnDefinition = "BINARY(16)", nullable = false)
+    private User lastModifiedBy;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false, nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
+}
