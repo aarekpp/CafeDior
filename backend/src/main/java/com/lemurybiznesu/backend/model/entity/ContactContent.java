@@ -10,13 +10,22 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "contact_content", indexes = {@Index(name = "idx_contact_order", columnList = "display_order")})
+@Table(name = "contact_content",
+        indexes = {
+            @Index(name = "idx_contact_order", columnList = "display_order"),
+            @Index(name = "idx_contact_file_name", columnList = "file_name")
+        },
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uc_contact_order", columnNames = "display_order"),
+            @UniqueConstraint(name = "uc_contact_file_name", columnNames = "file_name"),
+        })
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ContactContent {
@@ -24,7 +33,7 @@ public class ContactContent {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     @EqualsAndHashCode.Include
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "File name cannot be blank")
     @Size(max = 255)
@@ -33,7 +42,7 @@ public class ContactContent {
     private String fileName;
 
     @NotNull(message = "Display order cannot be empty")
-    @Column(name = "display_order", nullable = false, columnDefinition = "INT UNSIGNED")
+    @Column(name = "display_order", nullable = false, unique = true, columnDefinition = "INT UNSIGNED")
     private Integer displayOrder;
 
     @NotNull

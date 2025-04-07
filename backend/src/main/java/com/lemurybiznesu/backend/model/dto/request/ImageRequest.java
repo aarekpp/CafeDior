@@ -24,7 +24,7 @@ public class ImageRequest {
     @Schema(description = "Pliki")
     private List<MultipartFile> files;
     @NotEmpty
-    @Schema(description = "Kolejność wyświetlania zdjęć", example = "[2,1,3]")
+    @Schema(description = "Kolejność wyświetlania zdjęć", example = "[2,1]")
     private List<Integer> displayOrders;
     @NotBlank
     @Schema(description = "Sekcja do której należą zdjęcia (menu, contact)", example = "menu")

@@ -17,7 +17,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "menu_content", indexes = {@Index(name = "idx_menu_order", columnList = "display_order")})
+@Table(name = "menu_content",
+        indexes = {
+            @Index(name = "idx_menu_order", columnList = "display_order"),
+            @Index(name = "idx_menu_file_name", columnList = "file_name")
+        },
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uc_menu_order", columnNames = "display_order"),
+            @UniqueConstraint(name = "uc_menu_file_name", columnNames = "file_name")
+        })
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MenuContent {
@@ -34,7 +42,7 @@ public class MenuContent {
     private String fileName;
 
     @NotNull(message = "Display order cannot be empty")
-    @Column(name = "display_order", nullable = false, columnDefinition = "INT UNSIGNED")
+    @Column(name = "display_order", nullable = false, unique = true, columnDefinition = "INT UNSIGNED")
     private Integer displayOrder;
 
     @NotNull
