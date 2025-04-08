@@ -7,6 +7,7 @@ import com.lemurybiznesu.backend.repository.RoleRepository;
 import com.lemurybiznesu.backend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,9 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final static Logger LOGGER = LoggerFactory.getLogger(DataInitializer.class);
+
+    @Value("${app.images.path}")
+    private String imagesPath;
 
     public DataInitializer(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
@@ -97,24 +101,14 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeImagesDirectory() {
-        Path path = Paths.get("images");
+        Path path = Paths.get(imagesPath);
         try {
             Files.createDirectories(path);
-            checkWritePermissions(path);
-
-            for (String dir : Arrays.asList("menu", "contact")) {
-                Path subDir = path.resolve(dir);
-                Files.createDirectories(subDir);
-                checkWritePermissions(subDir);
+            if (!Files.isWritable(path)) {
+                throw new RuntimeException("No write permissions for: " + path.toAbsolutePath());
             }
         } catch (IOException e) {
             throw new RuntimeException("Directory initialization failed: " + path.toAbsolutePath(), e);
-        }
-    }
-
-    private void checkWritePermissions(Path path) {
-        if (!Files.isWritable(path)) {
-            throw new RuntimeException("No write permissions for: " + path.toAbsolutePath());
         }
     }
 }
