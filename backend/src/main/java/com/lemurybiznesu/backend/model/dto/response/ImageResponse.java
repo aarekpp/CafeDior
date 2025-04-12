@@ -36,7 +36,7 @@ public class ImageResponse {
         return new ImageResponse(
           imageContent.getId(),
           imageContent.getImageContentType().name(),
-          "/api/image/" + imageContent.getFilename()
+          "/api/image/" + imageContent.getFilename() + "?v=" + imageContent.getVersion()
         );
     }
 }

@@ -64,9 +64,12 @@ public class ImageContent {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
+    private int version = 0;
+
     @PrePersist
     @PreUpdate
     private void normalizeData(){
         this.originalFilename = originalFilename.trim();
+        this.version++;
     }
 }

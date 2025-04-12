@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/image")
@@ -30,6 +32,8 @@ public class ImageController {
 
             if (resource.exists() && resource.isReadable()) {
                 return ResponseEntity.ok()
+                        .cacheControl(CacheControl.maxAge(90, TimeUnit.DAYS).immutable())
+                        .header("ETag", "\"" +file.hashCode() + "\"")
                         .contentType(MediaType.parseMediaType(Files.probeContentType(file)))
                         .body(resource);
             } else {
