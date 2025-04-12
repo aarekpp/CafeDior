@@ -29,7 +29,7 @@ public class ImageContentService {
     }
 
     public List<ImageContent> getAllImages() {
-        return new ArrayList<>();
+        return imageContentRepository.findAll();
     }
 
     @Transactional
