@@ -83,6 +83,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/images/**").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
                         .requestMatchers(HttpMethod.PUT, "/api/images/**").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
                         .requestMatchers(HttpMethod.DELETE, "/api/images/**").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
+                        .requestMatchers("/api/images/**").denyAll()
+                        .requestMatchers(HttpMethod.GET,"/api/home/**").permitAll()
+                        .requestMatchers("/api/home/**").denyAll()
+                        .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
+                        .requestMatchers("/api/images/**").denyAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
