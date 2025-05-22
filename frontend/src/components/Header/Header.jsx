@@ -3,10 +3,13 @@ import Logo from "../../icons/logo.png";
 import { useNavigate } from "react-router";
 import styles from "./Header.module.scss";
 import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "src/redux/AuthSlice";
 
 const Header = () => {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
-  const [isSignIn, setIsSignIn] = useState(true);
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => {
@@ -18,7 +21,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    setIsSignIn(false);
+    dispatch(logout());
     handleMenuClose();
     navigate("/");
   };
@@ -37,7 +40,7 @@ const Header = () => {
         <Typography onClick={() => navigate("/")}>Kontakt</Typography>
       </div>
 
-      {isSignIn ? (
+      {isLoggedIn ? (
         <div className={styles.loggedInSection}>
           <Button
             variant="contained"
