@@ -12,6 +12,9 @@ import styles from "./SignIn.module.scss";
 import logo from "../../icons/logo.png";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
+import { useDispatch } from "react-redux";
+import { setLoginState } from "src/redux/AuthSlice";
+import AuthService from "src/services/AuthService";
 
 const StyledContainer = styled(Container)({
   display: "flex",
@@ -29,6 +32,7 @@ const StyledForm = styled("form")({
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -49,6 +53,27 @@ const SignIn = () => {
     if (!validateData()) {
       setLoading(false);
       return;
+    }
+    const response = await AuthService.signIn({
+      email: email,
+      password: password,
+    });
+
+    if (response !== null) {
+      dispatch(
+        setLoginState({
+          role: response.role,
+          isLoggedIn: true,
+          user: response.userId,
+        })
+      );
+      console.log("zalogowano");
+      navigate("/", { replace: true });
+      console.log(window.location.pathname);
+    } else {
+      setLoading(false);
+      setEmailError(true);
+      setPasswordError(true);
     }
   };
 

@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./Home.module.scss";
 import Header from "src/components/Header/Header";
 import { Typography } from "@mui/material";

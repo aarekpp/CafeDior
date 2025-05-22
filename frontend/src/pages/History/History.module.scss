@@ -1,0 +1,53 @@
+.formHeader {
+  padding: 2rem 0;
+  text-align: center;
+  background-color: #f5f5f5;
+  margin-bottom: 2rem;
+
+  &Text {
+    color: #9f7438;
+    font-weight: 700;
+  }
+}
+
+.content {
+  padding: 0 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.noReservations {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 2rem;
+}
+
+.tile {
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  &Header {
+    background-color: #1976d2;
+    color: white !important;
+    padding: 1rem;
+
+    .MuiCardHeader-title {
+      font-weight: 600;
+    }
+  }
+
+  &Content {
+    padding: 1.5rem;
+
+    .MuiTypography-body2 {
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+  }
+}
