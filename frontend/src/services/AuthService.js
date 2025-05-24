@@ -30,7 +30,7 @@ const AuthService = {
   logout: async () => {
     try {
       const response = await ApiClient.post("/auth/logout", {});
-      return response.data;
+      return response;
     } catch (error) {
       console.error("Logout failed: ", error);
       return null;
