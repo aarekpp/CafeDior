@@ -5,6 +5,7 @@ import styles from "./Header.module.scss";
 import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "src/redux/AuthSlice";
+import AuthService from "src/services/AuthService";
 
 const Header = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -20,10 +21,17 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    handleMenuClose();
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await AuthService.logout();
+      if (response.status === 200) {
+        dispatch(logout());
+        handleMenuClose();
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
