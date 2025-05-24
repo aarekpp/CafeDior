@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Logo from "../../icons/logo.png";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
 import { Box, Button, Typography, Menu, MenuItem } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";

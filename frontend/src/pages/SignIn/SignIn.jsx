@@ -67,9 +67,7 @@ const SignIn = () => {
           user: response.userId,
         })
       );
-      console.log("zalogowano");
       navigate("/", { replace: true });
-      console.log(window.location.pathname);
     } else {
       setLoading(false);
       setEmailError(true);
