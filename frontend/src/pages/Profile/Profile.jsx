@@ -26,13 +26,12 @@ const Profile = () => {
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.user);
   const [isEditEnable, setIsEditEnable] = useState(false);
-  const [originalData, setOriginalData] = useState({
+  const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
     phoneNumber: "",
     email: "",
   });
-  const [userData, setUserData] = useState(originalData);
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -86,8 +85,6 @@ const Profile = () => {
         phoneNumber: response.data.phoneHumber,
       }));
       setIsEditEnable(false);
-    } else {
-      setUserData(originalData);
     }
     setLoading(false);
   };
@@ -102,7 +99,6 @@ const Profile = () => {
           email: response.data.email,
           phoneNumber: response.data.phoneNumber,
         };
-        setOriginalData(data);
         setUserData(data);
       }
       setIsDataLoaded(true);
