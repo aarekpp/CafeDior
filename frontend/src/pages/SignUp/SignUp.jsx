@@ -12,6 +12,7 @@ import styles from "./SignUp.module.scss";
 import logo from "../../icons/logo.png";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
+import AuthService from "src/services/AuthService";
 
 const StyledContainer = styled(Container)({
   display: "flex",
@@ -86,6 +87,23 @@ const SignUp = () => {
     if (!validateData()) {
       setLoading(false);
       return;
+    }
+
+    const dataToSend = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      confirmPassword: confirmPassword,
+    };
+    try {
+      const response = await AuthService.signUp(dataToSend);
+      if (response.status === 200) {
+        navigate("/signin");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
