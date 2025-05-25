@@ -1,3 +1,37 @@
 .container {
-  background-color: red;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+
+  .main {
+    background-image: url("../../icons/b.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: calc(100vh - 5rem);
+
+    .text {
+      color: white;
+      padding: 1rem 3rem;
+      font-family: serif;
+    }
+
+    .title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 2rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+    }
+
+    .description {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+  }
 }
