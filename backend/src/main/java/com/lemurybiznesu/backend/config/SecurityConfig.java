@@ -2,6 +2,7 @@ package com.lemurybiznesu.backend.config;
 
 import com.lemurybiznesu.backend.model.entity.ERole;
 import com.lemurybiznesu.backend.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("#{'${app.allowed-origins}'.split(',')}")
+    private List<String> allowedOrigins;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -31,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://127.0.0.1:3000", "https://localhost:3000", "https://127.0.0.1:8443"));
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));
@@ -75,6 +79,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").denyAll()
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/api/user/**").denyAll()
                         .requestMatchers(HttpMethod.GET, "/api/about").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
                         .requestMatchers(HttpMethod.PUT, "/api/about").hasAnyAuthority(String.valueOf(ERole.MODERATOR))
