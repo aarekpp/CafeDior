@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Link,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import styles from "./Profile.module.scss";
 import logo from "../../icons/logo.png";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
-import { setUser } from "src/redux/AuthSlice";
-import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
+import { useSelector } from "react-redux";
+import UserService from "src/services/UserService";
 
 const StyledContainer = styled(Container)({
   display: "flex",
@@ -31,20 +23,21 @@ const StyledForm = styled("form")({
 });
 
 const Profile = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const userId = useSelector((state) => state.auth.user);
   const [isEditEnable, setIsEditEnable] = useState(false);
-
-  const [userData, setUserData] = useState({
+  const [originalData, setOriginalData] = useState({
     firstName: "",
     lastName: "",
     phoneNumber: "",
+    email: "",
   });
+  const [userData, setUserData] = useState(originalData);
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const validateData = () => {
@@ -70,16 +63,6 @@ const Profile = () => {
     }));
   };
 
-  useEffect(() => {
-    if (user) {
-      setUserData({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phoneNumber: user.phoneNumber,
-      });
-    }
-  }, [user, isEditEnable]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -88,25 +71,51 @@ const Profile = () => {
       return;
     }
 
-    try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_REACT_APP_API}/users/user`,
-        userData
-      );
-      if (response.status === 200) {
-        setIsEditEnable(false);
-        dispatch(
-          setUser({
-            user: response.data,
-          })
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+    const dataToSend = {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phoneHumber: userData.phoneNumber,
+    };
+
+    const response = await UserService.updateUserData(userId, dataToSend);
+    if (response?.status === 200) {
+      setUserData((prev) => ({
+        ...prev,
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        phoneNumber: response.data.phoneHumber,
+      }));
+      setIsEditEnable(false);
+    } else {
+      setUserData(originalData);
     }
+    setLoading(false);
   };
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const response = await UserService.getUserData(userId);
+      if (response?.status === 200) {
+        const data = {
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          email: response.data.email,
+          phoneNumber: response.data.phoneNumber,
+        };
+        setOriginalData(data);
+        setUserData(data);
+      }
+      setIsDataLoaded(true);
+    };
+
+    if (userId !== null) {
+      getUserData();
+    } else {
+      navigate("/");
+    }
+  }, [userId, navigate]);
+
+  if (!isDataLoaded) return <Loader />;
 
   return (
     <div className={styles.profilePage}>
@@ -154,7 +163,7 @@ const Profile = () => {
               variant="outlined"
               margin="normal"
               disabled={true}
-              value={user && user.email}
+              value={userData.email}
             />
 
             <TextField
@@ -187,7 +196,7 @@ const Profile = () => {
                     color="primary"
                     size="large"
                     type="button"
-                    onClick={() => setIsEditEnable(true)}
+                    onClick={() => setIsEditEnable(false)}
                     sx={{ mt: 3 }}
                   >
                     Anuluj

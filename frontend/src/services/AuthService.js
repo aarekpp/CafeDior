@@ -13,7 +13,7 @@ const AuthService = {
   signUp: async (data) => {
     try {
       const response = await ApiClient.post("/auth/signup", data);
-      return response.data;
+      return response;
     } catch (error) {
       console.error("Sign up failed: ", error);
       return null;
