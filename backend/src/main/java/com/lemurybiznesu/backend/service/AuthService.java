@@ -14,9 +14,12 @@ import com.lemurybiznesu.backend.security.TokenDetails;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,15 +32,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenBlacklistService refreshTokenBlacklistService;
-    private final UserService userService;
     private final RoleRepository roleRepository;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, RefreshTokenBlacklistService refreshTokenBlacklistService, UserService userService, RoleRepository roleRepository) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, RefreshTokenBlacklistService refreshTokenBlacklistService, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.refreshTokenBlacklistService = refreshTokenBlacklistService;
-        this.userService = userService;
         this.roleRepository = roleRepository;
     }
 
@@ -133,7 +134,7 @@ public class AuthService {
 
             if(jwtProvider.validateToken(accessToken, false) && jwtProvider.validateToken(refreshToken, true)) {
                 TokenDetails refreshTokenDetails = jwtProvider.decodeToken(refreshToken, true);
-                userService.incrementTokenVersion(UUID.fromString(refreshTokenDetails.getUserId()));
+                incrementTokenVersion(UUID.fromString(refreshTokenDetails.getUserId()));
                 refreshTokenBlacklistService.blacklistRefreshToken(refreshToken, refreshTokenDetails);
                 removeTokensFromResponse(response);
             }
@@ -157,13 +158,25 @@ public class AuthService {
     }
 
     private void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
-        String cookie = String.format("%s=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=%d", name, value, maxAge);
-        response.addHeader("Set-Cookie", cookie);
+        ResponseCookie responseCookie = ResponseCookie.from(name, value)
+                .path("/")
+                .maxAge(maxAge)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
+        response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
     private void removeCookie(HttpServletResponse response, String name) {
-        String cookie = String.format("%s=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0", name);
-        response.addHeader("Set-Cookie", cookie);
+        ResponseCookie responseCookie = ResponseCookie.from(name, "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
+        response.addHeader("Set-Cookie", responseCookie.toString());
     }
 
     private void invalidateOldTokens(HttpServletRequest request) {
@@ -173,6 +186,17 @@ public class AuthService {
                 TokenDetails refreshTokenDetails = jwtProvider.decodeToken(cookieTokens.getRefreshToken(), true);
                 refreshTokenBlacklistService.blacklistRefreshToken(cookieTokens.getRefreshToken(), refreshTokenDetails);
             }
+        }
+    }
+
+    @Transactional
+    protected void incrementTokenVersion(UUID id) {
+        try{
+            User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            user.setTokenVersion(user.getTokenVersion() + 1);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
