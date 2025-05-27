@@ -73,7 +73,7 @@ const Profile = () => {
     const dataToSend = {
       firstName: userData.firstName,
       lastName: userData.lastName,
-      phoneHumber: userData.phoneNumber,
+      phoneNumber: userData.phoneNumber,
     };
 
     const response = await UserService.updateUserData(userId, dataToSend);
@@ -82,7 +82,7 @@ const Profile = () => {
         ...prev,
         firstName: response.data.firstName,
         lastName: response.data.lastName,
-        phoneNumber: response.data.phoneHumber,
+        phoneNumber: response.data.phoneNumber,
       }));
       setIsEditEnable(false);
     }
