@@ -67,7 +67,12 @@ const SignIn = () => {
           user: response.userId,
         })
       );
-      navigate("/", { replace: true });
+
+      if (response.role === "ADMIN") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     } else {
       setLoading(false);
       setEmailError(true);

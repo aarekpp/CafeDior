@@ -8,6 +8,7 @@ import History from "src/pages/History/History";
 import Reservation from "src/components/Reservation/Reservation";
 import RequireGuest from "./RequireGuest";
 import RequireAuth from "./RequireAuth";
+import AdminPanel from "src/pages/Admin/AdminPanel";
 
 export default function AppRoutes() {
   return (
@@ -23,6 +24,10 @@ export default function AppRoutes() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/history" element={<History />} />
           <Route path="/reservation" element={<Reservation />} />
+        </Route>
+
+        <Route element={<RequireRole allowedRoles={["ADMIN"]} />}>
+          <Route path="/admin" element={<AdminPanel />} />
         </Route>
       </Routes>
     </BrowserRouter>
