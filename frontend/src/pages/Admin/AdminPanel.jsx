@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "src/redux/AuthSlice";
 import AuthService from "src/services/AuthService";
-import styles from "./Admin.Panel,module.scss";
+import styles from "./AdminPanel.module.scss";
 
 export default function AdminPanel() {
   const dispatch = useDispatch();
