@@ -69,8 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isValidAccessToken(CookieTokens tokens) {
         return tokens != null
                 && StringUtils.hasText(tokens.getAccessToken())
-                && jwtProvider.validateToken(tokens.getAccessToken(), false)
-                && !refreshTokenBlacklistService.isRefreshTokenBlacklisted(tokens.getRefreshToken());
+                && jwtProvider.validateToken(tokens.getAccessToken(), false);
     }
 
     private boolean isValidRefreshToken(CookieTokens tokens) {

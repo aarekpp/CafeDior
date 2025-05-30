@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,7 +29,8 @@ public class UserController {
 
     @Operation(
             summary = "Pobieranie danych użytkownika",
-            description = "Pobiera dane użytkownika potrzebne do panelu edycji danych konta"
+            description = "Pobiera dane użytkownika potrzebne do panelu edycji danych konta",
+            security = { @SecurityRequirement(name = "accessToken") }
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pobrano dane", content = @Content(schema = @Schema(implementation = UserDetailsResponse.class))),
@@ -46,7 +48,8 @@ public class UserController {
 
     @Operation(
             summary = "Aktualizacja danych",
-            description = "Aktualizauje dane użytkownika"
+            description = "Aktualizauje dane użytkownika",
+            security = { @SecurityRequirement(name = "accessToken") }
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Zaktualizowano dane", content = @Content(schema = @Schema(implementation = UserDetailsUpdateRequest.class))),

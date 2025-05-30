@@ -94,6 +94,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/home/**").denyAll()
                         .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
                         .requestMatchers("/api/images/**").denyAll()
+                        .requestMatchers("/api/reservations/**").authenticated()
+                        .requestMatchers("/api/reservations/**").denyAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
