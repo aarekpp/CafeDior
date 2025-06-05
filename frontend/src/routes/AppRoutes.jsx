@@ -9,6 +9,7 @@ import Reservation from "src/components/Reservation/Reservation";
 import RequireGuest from "./RequireGuest";
 import RequireAuth from "./RequireAuth";
 import AdminPanel from "src/pages/Admin/AdminPanel";
+import RequireRole from "./RequireRole";
 
 export default function AppRoutes() {
   return (
