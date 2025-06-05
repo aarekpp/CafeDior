@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
 import styles from "./Reservation.module.scss";
 import logo from "../../icons/logo.png";
+import { format } from "date-fns";
+import ReservationService from "src/services/ReservationService";
 
 const StyledContainer = styled(Container)({
   display: "flex",
@@ -36,8 +38,8 @@ const StyledForm = styled("form")({
 
 export default function Reservation() {
   const navigate = useNavigate();
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [people, setPeople] = useState("");
   const [loading, setLoading] = useState(false);
   const [dateError, setDateError] = useState(false);
@@ -47,8 +49,8 @@ export default function Reservation() {
   const isWeekend = (date) => [0, 6].includes(date.day());
 
   const validateData = () => {
-    const dateValid = !!date;
-    const timeValid = !!time;
+    const dateValid = !!selectedDate;
+    const timeValid = !!selectedTime;
     const peopleValid = !!people;
 
     setDateError(!dateValid);
@@ -58,13 +60,25 @@ export default function Reservation() {
     return dateValid && timeValid && peopleValid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     if (!validateData()) {
       setLoading(false);
       return;
+    }
+
+    const dataToSend = {
+      reservationDate: format(selectedDate, "dd/MM/yyyy"),
+      reservationTime: format(selectedTime, "HH:mm"),
+      people: Number(people),
+    };
+
+    const response = await ReservationService.createReservation(dataToSend);
+
+    if (response?.status === 201) {
+      navigate("/", { replace: true });
     }
   };
 
@@ -89,8 +103,8 @@ export default function Reservation() {
               <Box sx={{ my: 2 }}>
                 <DatePicker
                   label="Data rezerwacji"
-                  value={date}
-                  onChange={(newValue) => setDate(newValue)}
+                  value={selectedDate}
+                  onChange={(newValue) => setSelectedDate(newValue)}
                   minDate={dayjs()}
                   format="DD/MM/YYYY"
                   slotProps={{
@@ -107,14 +121,14 @@ export default function Reservation() {
               <Box sx={{ my: 2 }}>
                 <TimePicker
                   label="Godzina rozpoczęcia"
-                  value={time}
-                  onChange={(newValue) => setTime(newValue)}
+                  value={selectedTime}
+                  onChange={(newValue) => setSelectedTime(newValue)}
                   ampm={false}
                   minutesStep={15}
                   shouldDisableTime={(value, view) => {
-                    if (!date) return true;
-                    const minHour = isWeekend(date) ? 9 : 8;
-                    const maxHour = isWeekend(date) ? 20 : 19;
+                    if (!selectedDate) return true;
+                    const minHour = isWeekend(selectedDate) ? 9 : 8;
+                    const maxHour = isWeekend(selectedDate) ? 20 : 19;
 
                     if (view === "hours") {
                       return value.hour() < minHour || value.hour() >= maxHour;
