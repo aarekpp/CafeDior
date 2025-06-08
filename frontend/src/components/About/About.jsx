@@ -2,16 +2,65 @@ import React, { useEffect, useState } from "react";
 import styles from "./About.module.scss";
 import { Typography, Button } from "@mui/material";
 import about from "../../icons/about.png";
+import { useSelector } from "react-redux";
+import AboutContentService from "src/services/AboutContentService";
 
 export default function About() {
-  const [role, setRole] = useState("MODERATOR");
+  const { role } = useSelector((state) => state.auth);
   const [isEditable, setIsEditable] = useState(false);
   const [text, setText] = useState("");
   const [editedText, setEditedText] = useState("");
 
+  const validateInput = () => {
+    const textRegexp = /^[\p{L}0-9\s.,?!;:'"()\-\u2013]*$/u;
+    if (editedText.length > 0 && textRegexp.test(editedText)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const saveAboutContent = async () => {
+    if (!validateInput()) {
+      return;
+    }
+
+    const dataToSend = {
+      text: editedText,
+    };
+
+    if (text === null || text.length === 0) {
+      const response = await AboutContentService.addAboutContent(dataToSend);
+      if (response?.status === 200) {
+        setText(response.data);
+        setEditedText(response.data);
+        setIsEditable(false);
+      }
+    } else {
+      const response = await AboutContentService.updateAboutContent(dataToSend);
+      if (response?.status === 200) {
+        setText(response.data);
+        setEditedText(response.data);
+        setIsEditable(false);
+      }
+    }
+  };
+
+  const handleCancelButton = () => {
+    setIsEditable(false);
+    setEditedText(text);
+  };
+
   useEffect(() => {
-    setRole("MODERATOR");
-    setText("");
+    const fetchAboutContent = async () => {
+      const response = await AboutContentService.fetchAboutContent();
+      if (response?.status === 200) {
+        setText(response.data);
+        setEditedText(response.data);
+      }
+    };
+
+    fetchAboutContent();
   }, []);
 
   return (
@@ -20,37 +69,27 @@ export default function About() {
         {isEditable ? (
           <div>
             <div>
-              <textarea onChange={(e) => setEditedText(e.target.value)}>
+              <textarea
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+              >
                 {editedText}
               </textarea>
             </div>
             <div>
-              <Button onClick={() => setIsEditable(false)}>Anuluj</Button>
+              <Button onClick={handleCancelButton}>Anuluj</Button>
             </div>
             <div>
-              <Button onClick={() => setIsEditable(false)}>Zapisz</Button>
+              <Button onClick={saveAboutContent}>Zapisz</Button>
             </div>
           </div>
         ) : (
           <Typography>
-            {text}
-            <p className={styles.text}>
-              Nasze menu to prawdziwa uczta dla miłośników
-              <br />
-              świeżego pieczywa, wypiekanego na miejscu.
-              <br />
-              Proponujemy śniadania inspirowane kuchnią francuską,
-              <br />
-              zarówno w wersji słodkiej, jak i wytrawnej.
-              <br />
-              Oferujemy świeże pieczywo, w tym maślane bułki, bagietki
-              <br />
-              oraz pyszne ciasta, takie jak muffiny czy tarty.
-              <br />
-              Do każdego wypieku serwujemy aromatyczną kawę,
-              <br />
-              która doskonale dopełnia smak naszych specjałów.
-            </p>
+            {text === null || text.length === 0 ? (
+              <p className={styles.text}>Nie wprowadzono opisu sekcji</p>
+            ) : (
+              <p className={styles.text}>{text}</p>
+            )}
             {role === "MODERATOR" && (
               <div>
                 <Button onClick={() => setIsEditable(true)}>Edytuj</Button>

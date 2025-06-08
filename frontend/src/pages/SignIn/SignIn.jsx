@@ -40,8 +40,11 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
 
   const validateData = () => {
-    const emailTest = email.length > 0 ? 1 : 0;
-    const passwordTest = password.length >= 10 ? 1 : 0;
+    const forbiddenPatterns =
+      /(--)|(\.\.)|(<)|(>)|(')|(")|(;)|(`)|(\*\/)|(\/\*)/;
+    const emailTest = email.length > 0 && !forbiddenPatterns.test(email);
+    const passwordTest =
+      password.length >= 10 && !forbiddenPatterns.test(password);
     setEmailError(!emailTest);
     setPasswordError(!passwordTest);
     return emailTest && passwordTest;

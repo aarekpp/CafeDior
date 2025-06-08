@@ -52,10 +52,12 @@ const SignUp = () => {
     const regexpPhone = /^\d{9}$/;
     const regexpPassword =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    const forbiddenPatterns =
+      /(--)|(\.\.)|(<)|(>)|(')|(")|(;)|(`)|(\*\/)|(\/\*)/;
 
     const firstNameTest = regexpFirstName.test(firstName);
     const lastNameTest = regexpLastName.test(lastName);
-    const emailTest = regexpEmail.test(email);
+    const emailTest = regexpEmail.test(email) && !forbiddenPatterns.test(email);
     const phoneNumberTest = regexpPhone.test(phoneNumber);
     const passwordTest = regexpPassword.test(password);
     const confirmPasswordTest =
