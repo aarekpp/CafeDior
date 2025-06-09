@@ -51,7 +51,7 @@ const SignUp = () => {
     const regexpEmail = /^[^@]+@[^@]+\.[^@]+$/;
     const regexpPhone = /^\d{9}$/;
     const regexpPassword =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{10,}$/;
     const forbiddenPatterns =
       /(--)|(\.\.)|(<)|(>)|(')|(")|(;)|(`)|(\*\/)|(\/\*)/;
 

@@ -6,8 +6,25 @@ import Specialities from "../../components/Specialities/Specialities";
 import Menu from "../../components/Menu/Menu";
 import Contact from "../../components/Contact/Contact";
 import Footer from "../../components/Footer/Footer";
+import { useEffect, useState } from "react";
+import HomeService from "src/services/HomeService";
 
 export default function Home() {
+  const [menuImages, setMenuImages] = useState([]);
+
+  useEffect(() => {
+    const fetchHomeData = async () => {
+      const response = await HomeService.fetchData();
+      if (response?.status === 200 && response.data) {
+        const images = response.data.images;
+        const menu = images.filter((img) => img.type.startsWith("MENU"));
+        setMenuImages(menu);
+      }
+    };
+
+    fetchHomeData();
+  }, []);
+
   return (
     <div className={styles.container}>
       <Header />
@@ -32,7 +49,7 @@ export default function Home() {
         <Specialities></Specialities>
       </div>
       <div className={styles.menu}>
-        <Menu></Menu>
+        <Menu images={menuImages}></Menu>
       </div>
       <div className={styles.contact}>
         <Contact></Contact>
