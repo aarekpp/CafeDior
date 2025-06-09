@@ -28,7 +28,7 @@ public class ImageResponse {
 
     @Schema(
             description = "Publiczny URL do zdjęcia na serwerze",
-            example = "/api/image/550e8400-e29b-41d4-a716-446655440000.jpg"
+            example = "/image/550e8400-e29b-41d4-a716-446655440000.jpg"
     )
     private String url;
 
@@ -36,7 +36,7 @@ public class ImageResponse {
         return new ImageResponse(
           imageContent.getId(),
           imageContent.getImageContentType().name(),
-          "/api/image/" + imageContent.getFilename() + "?v=" + imageContent.getVersion()
+          "/image/" + imageContent.getFilename() + "?v=" + imageContent.getVersion()
         );
     }
 }

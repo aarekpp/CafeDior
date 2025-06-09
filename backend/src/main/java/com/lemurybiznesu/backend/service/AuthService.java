@@ -77,6 +77,7 @@ public class AuthService {
         );
     }
 
+    @Transactional
     public User signupUser(SignupRequest signupRequest) {
         if(!signupRequest.getPassword().equals(signupRequest.getConfirmPassword())) {
             throw new RuntimeException("Passwords do not match");
