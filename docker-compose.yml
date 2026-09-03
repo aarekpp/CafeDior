@@ -1,0 +1,80 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: cafe-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    expose:
+      - "3306"
+    networks:
+      - cafe-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cafe-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SERVER_PORT: ${SERVER_PORT}
+      SERVER_SSL_KEY_STORE: ${SERVER_SSL_KEY_STORE}
+      SERVER_SSL_KEY_STORE_PASSWORD: ${SERVER_SSL_KEY_STORE_PASSWORD}
+      SERVER_SSL_KEY_STORE_TYPE: PKCS12
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+      APP_IMAGES_PATH: ${APP_IMAGES_PATH}
+      APP_ALLOWED_ORIGINS: ${APP_ALLOWED_ORIGINS}
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    volumes:
+      - ./backend/images:/app/images
+      - ./cert/localhost+1.p12:/app/keystore/localhost+1.p12:ro
+    expose:
+      - "8443"
+    networks:
+      - cafe-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cafe-frontend
+    depends_on:
+      - backend
+    environment:
+      VITE_REACT_APP_API: /api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./cert/localhost+1.crt:/etc/ssl/certs/localhost+1.crt:ro
+      - ./cert/localhost+1.key:/etc/ssl/private/localhost+1.key:ro
+    networks:
+      - cafe-network
+
+networks:
+  cafe-network:
+    driver: bridge
+
+volumes:
+  db_data:

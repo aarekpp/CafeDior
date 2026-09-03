@@ -34,18 +34,37 @@ const Header = () => {
     }
   };
 
+  const scrollToSection = (id) => {
+    if (window.location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Box textAlign="center">
         <img src={Logo} alt="CafeDior logo" className={styles.logo} />
       </Box>
       <div className={styles.bookmarks}>
-        <Typography onClick={() => navigate("/")}>O nas</Typography>
-        <Typography onClick={() => navigate("/")}>
+        <Typography onClick={() => scrollToSection("about")}>O nas</Typography>
+        <Typography onClick={() => scrollToSection("specialities")}>
           Nasze specjalności
         </Typography>
-        <Typography onClick={() => navigate("/")}>Menu</Typography>
-        <Typography onClick={() => navigate("/")}>Kontakt</Typography>
+        <Typography onClick={() => scrollToSection("menu")}>Menu</Typography>
+        <Typography onClick={() => scrollToSection("contact")}>
+          Kontakt
+        </Typography>
       </div>
 
       {isLoggedIn ? (

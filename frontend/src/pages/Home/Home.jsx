@@ -42,16 +42,16 @@ export default function Home() {
           </p>
         </Typography>
       </div>
-      <div className={styles.about}>
+      <div id="about" className={styles.about}>
         <About></About>
       </div>
-      <div className={styles.specialities}>
+      <div id="specialities" className={styles.specialities}>
         <Specialities></Specialities>
       </div>
-      <div className={styles.menu}>
+      <div id="menu" className={styles.menu}>
         <Menu images={menuImages}></Menu>
       </div>
-      <div className={styles.contact}>
+      <div id="contact" className={styles.contact}>
         <Contact></Contact>
       </div>
       <div className={styles.footer}>

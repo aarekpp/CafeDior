@@ -18,8 +18,14 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
 import styles from "./Reservation.module.scss";
 import logo from "../../icons/logo.png";
-import { format } from "date-fns";
 import ReservationService from "src/services/ReservationService";
+import "dayjs/locale/pl";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(customParseFormat);
+dayjs.extend(localizedFormat);
+dayjs.locale("pl");
 
 const StyledContainer = styled(Container)({
   display: "flex",
@@ -70,8 +76,8 @@ export default function Reservation() {
     }
 
     const dataToSend = {
-      reservationDate: format(selectedDate, "dd/MM/yyyy"),
-      reservationTime: format(selectedTime, "HH:mm"),
+      reservationDate: selectedDate ? selectedDate.format("DD/MM/YYYY") : "",
+      reservationTime: selectedTime ? selectedTime.format("HH:mm") : "",
       people: Number(people),
     };
 
@@ -108,11 +114,15 @@ export default function Reservation() {
                   minDate={dayjs()}
                   format="DD/MM/YYYY"
                   slotProps={{
+                    popper: {
+                      disablePortal: false,
+                    },
                     textField: {
                       variant: "outlined",
                       fullWidth: true,
                       error: dateError,
                       helperText: dateError ? "Wybierz datę" : "",
+                      autoFocus: false,
                     },
                   }}
                 />

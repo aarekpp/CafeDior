@@ -67,10 +67,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/swagger-ui.html",
                                 "/api/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-resources/**",
-                                "/webjars/**"
+                                "/api/v3/api-docs/**",
+                                "/api/swagger-ui/**",
+                                "/api/swagger-resources/**",
+                                "/api/webjars/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/signin",
